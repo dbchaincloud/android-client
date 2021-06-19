@@ -32,3 +32,12 @@ internal fun checkDBChainOperactionSuccess(queryOperationResultBean: QueryOperat
     }
 
 }
+
+fun checkIdValid(id: String?): Boolean {
+    try {
+        val toLong = id?.toLong() ?: return false
+        return toLong > 0
+    } catch (e: Exception) {
+        return false
+    }
+}

@@ -42,3 +42,19 @@ suspend fun getToken(address: String): Int {
     } ?: return 0
 }
 
+suspend fun checkTokenAvailable(dbChainKey: DbChainKey): Boolean {
+    DBChain.withDBChainKey(dbChainKey)
+    //先查询是否有积分
+    if (getToken(dbChainKey.address) > 0) return true
+    // 先去获取积分
+    val requestUser = loopHandleInCount({
+        requestAppUser().isSuccess
+    }, { it ?: false }) ?: return false
+    if (!requestUser) return false
+    // 查询积分是不是真的到账了
+    val token =
+        loopHandleInTime({ getToken(dbChainKey.address) }, { it != null && it.toInt() > 0 })
+    if (token == null || token.toInt() < 1) return false
+    return true
+}
+

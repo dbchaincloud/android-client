@@ -75,6 +75,12 @@ class QueriedArray(method: String = "table", table: String) :
         return this
     }
 
+    fun order(field: String, direction: String = "desc"): QueriedArray {
+        val queried = OrderQuerier(field = field, direction = direction)
+        add(queried)
+        return this
+    }
+
     fun toJson(): String = Gson().toJson(this)
 
     companion object {
@@ -105,3 +111,9 @@ data class FieldQuerier(
 data class FindQuerier(override val method: String = "find", val id: String) : BaseQuerier()
 
 data class SelectQuerier(override val method: String = "select", val fields: String) : BaseQuerier()
+
+data class OrderQuerier(
+    override val method: String = "order",
+    val field: String,
+    val direction: String = "desc"
+) : BaseQuerier()
