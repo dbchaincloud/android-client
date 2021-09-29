@@ -13,7 +13,7 @@ public class DbChainKey {
     private String publicKey64;
     private String address;
     private byte[] privateKeyBytes;
-    private byte[] publicKeyBytes;
+    private byte[] publicKeyBytes33;
 
     // 私钥拼接方式：privateKeyDer = privateKeyLeft + privateKey32 + privateKeyMid + publicKey64
     // 公钥拼接方式：publicKeyDer = publicKeyLeft + publicKey64
@@ -31,7 +31,7 @@ public class DbChainKey {
         this.publicKey64 = publicKey64;
         this.address = address;
         privateKeyBytes = HexUtil.decode(this.privateKey32);
-        publicKeyBytes = HexUtil.decode(this.publicKey33);
+        publicKeyBytes33 = HexUtil.decode(this.publicKey33);
     }
 
     public void setMnemonic(String mnemonic) {
@@ -62,8 +62,8 @@ public class DbChainKey {
         return privateKeyBytes;
     }
 
-    public byte[] getPublicKeyBytes() {
-        return publicKeyBytes;
+    public byte[] getPublicKeyBytes33() {
+        return publicKeyBytes33;
     }
 
     @Override

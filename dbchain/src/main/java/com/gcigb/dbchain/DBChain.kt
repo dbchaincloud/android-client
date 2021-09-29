@@ -4,8 +4,7 @@ import android.content.Context
 import com.gcigb.dbchain.util.AppFilePath
 import com.gcigb.network.NetworkLib
 import okhttp3.Interceptor
-import org.spongycastle.jce.provider.BouncyCastleProvider
-import java.security.Security
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo
 
 
 /**
@@ -20,9 +19,11 @@ class DBChain {
         internal lateinit var baseUrl: String
         internal lateinit var chainId: String
         lateinit var dbChainKey: DbChainKey
+        lateinit var dbChainEncrypt: IDBChainEncrypt
 
         fun init(
             context: Context, appCode: String, baseUrl: String, chainId: String,
+            dbChainEncrypt: IDBChainEncrypt,
             isDebug: Boolean = false,
             testLogTag: String = "tag_test",
             errorLogTag: String = "tag_error",
@@ -32,9 +33,8 @@ class DBChain {
             this.appCode = appCode
             this.baseUrl = baseUrl
             this.chainId = chainId
+            this.dbChainEncrypt = dbChainEncrypt
             NetworkLib.initNetworkModule(context, isDebug, testLogTag, errorLogTag, httpLogTag, baseUrl, interceptors)
-            // Android里的 secp256k1 被阉割了，需要添加这行代码
-            Security.insertProviderAt(BouncyCastleProvider(), 1)
             AppFilePath.init(context)
         }
 

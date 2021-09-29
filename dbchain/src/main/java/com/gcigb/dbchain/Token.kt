@@ -9,7 +9,7 @@ import com.gcigb.network.RetrofitClient
 fun createAccessToken(): String {
     val currentTimeMillis = "${System.currentTimeMillis()}"
     val signObj = sign(currentTimeMillis.toByteArray(), DBChain.dbChainKey.privateKeyBytes)
-    val encodedPubKey = base58Encode(DBChain.dbChainKey.publicKeyBytes)
+    val encodedPubKey = base58Encode(DBChain.dbChainKey.publicKeyBytes33)
     val encodedSig = base58Encode(signObj)
     return "${encodedPubKey}:${currentTimeMillis}:${encodedSig}"
 }

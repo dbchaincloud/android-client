@@ -1,12 +1,12 @@
 package com.gcigb.dbchain.util;
 
+import static com.gcigb.dbchain.DBChain.dbChainEncrypt;
+
 import androidx.annotation.NonNull;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gcigb.dbchain.DbChainKey;
-import com.gcigb.dbchain.util.AddressUtil;
-import com.gcigb.dbchain.util.AppFilePath;
-import com.gcigb.dbchain.util.SecureRandomUtils;
+import com.gcigb.dbchain.util.coding.HexUtil;
 
 import org.bitcoinj.crypto.ChildNumber;
 import org.bitcoinj.crypto.DeterministicKey;
@@ -16,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.WalletFile;
 import org.web3j.protocol.ObjectMapperFactory;
-import org.web3j.utils.Numeric;
 
 import java.io.File;
 import java.io.IOException;
@@ -109,20 +108,21 @@ public class Wallet {
         }
         //获取密钥对
         ECKeyPair keyPair = ECKeyPair.create(dkKey.getPrivKeyBytes());
-        String publicKeyDer = Numeric.toHexStringNoPrefix(keyPair.getPublicKey());
-        while (publicKeyDer.length() < 128) {
-            //长度小于128前面需要补0
-            publicKeyDer = "0" + publicKeyDer;
-        }
         //生成钱包
         generateWallet(walletName, pwd, keyPair);
+
+        String mnemonicValue = convertMnemonicList(mnemonic);
+        String privateKey32Hex = dkKey.getPrivateKeyAsHex();
+        byte[] publicKey33Bytes = dbChainEncrypt.generatePublicKey33ByPrivateKey(dkKey.getPrivKeyBytes(), dkKey);
+        byte[] publicKey64Bytes = dbChainEncrypt.generatePublicKey64ByPrivateKey(dkKey.getPrivKeyBytes(), dkKey);
+        String address = dbChainEncrypt.generateAddressByPublicKeyByteArray33(publicKey33Bytes);
         //创建我们需要的信息
         return new DbChainKey(
-                convertMnemonicList(mnemonic),
-                dkKey.getPrivateKeyAsHex(),
-                dkKey.getPublicKeyAsHex(),
-                publicKeyDer,
-                AddressUtil.generateAddress(dkKey.getPublicKeyAsHex()));
+                mnemonicValue,
+                privateKey32Hex,
+                HexUtil.encodeHexString(publicKey33Bytes),
+                HexUtil.encodeHexString(publicKey64Bytes),
+                address);
     }
 
     private static String convertMnemonicList(List<String> mnemonics) {
