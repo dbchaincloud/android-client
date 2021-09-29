@@ -5,11 +5,14 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.gcigb.dbchain.*
+import com.gcigb.dbchain.util.coding.HexUtil
+import com.gcigb.dbchain.util.coding.base64Encode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
+
 
     private val list = listOf(
         "tooth",
@@ -30,6 +33,36 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         importMnemonic(View(this))
+    }
+
+    fun testSignEncryptDecrypt(view: View) {
+        val dbChainKey = MnemonicClient.generateMnemonic()
+        DBChain.withDBChainKey(dbChainKey)
+        Log.i(TAG, "generateMnemonic: ${dbChainKey.mnemonic}")
+        Log.i(TAG, "privateKeyHex: ${dbChainKey.privateKey32}")
+        Log.i(TAG, "publicKey33Hex: ${dbChainKey.publicKey33}")
+
+        val message = "Hello world"
+        val sign = DBChain.dbChainEncrypt.sign(dbChainKey.privateKeyBytes, message.toByteArray())
+        Log.i(TAG, "sign: ${base64Encode(sign)}")
+        val verify =
+            DBChain.dbChainEncrypt.verify(
+                HexUtil.decode(dbChainKey.publicKey64),
+                message.toByteArray(),
+                sign
+            )
+        Log.i(TAG, "verify: $verify")
+
+        val encrypt =
+            DBChain.dbChainEncrypt.encrypt(
+                HexUtil.decode(dbChainKey.publicKey64),
+                message.toByteArray()
+            )
+        Log.i(TAG, "encrypt: ${base64Encode(encrypt)}")
+        val decrypt = DBChain.dbChainEncrypt.decrypt(dbChainKey.privateKeyBytes, encrypt)
+        Log.i(TAG, "decrypt: ${String(decrypt)}")
+
+        Log.i(TAG, "address: " + dbChainKey.address)
     }
 
     fun generateMnemonic(view: View) {
