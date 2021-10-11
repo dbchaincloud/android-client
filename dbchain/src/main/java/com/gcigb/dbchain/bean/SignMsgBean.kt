@@ -1,5 +1,7 @@
 package com.gcigb.dbchain.bean
 
+import com.gcigb.dbchain.DBChain.Companion.dbChainEncrypt
+
 
 /**
  * @author: Xiao Bo
@@ -16,6 +18,6 @@ data class SignMsgBean(
 
 data class SignatureBean(val signature: String, val pub_key: PublicKeyBean)
 
-data class PublicKeyBean(val type: String = "tendermint/PubKeySecp256k1", val value: String)
+data class PublicKeyBean(val type: String = dbChainEncrypt.pubKeyType, val value: String)
 
 data class SignMetaBean(val chain_id: String, val account_number: String, val sequence: String)

@@ -4,6 +4,17 @@ import com.gcigb.dbchain.DBChain
 
 sealed class BaseMessageValue
 
+internal data class CreateApplicationMessageValue(
+    // 库名称
+    val name: String,
+    // 库描述
+    val description: String,
+    // 权限
+    val permission_required: Boolean,
+    // 创建者地址
+    val owner: String
+) : BaseMessageValue()
+
 internal data class InsertMessageValue(
     //插入数据的表名称
     val table_name: String,

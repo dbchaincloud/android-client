@@ -41,5 +41,9 @@ class DBChain {
         fun withDBChainKey(dbChainKey: DbChainKey) {
             this.dbChainKey = dbChainKey
         }
+
+        fun withAppCode(appCode: String){
+            this.appCode = appCode
+        }
     }
 }

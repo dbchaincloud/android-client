@@ -4,6 +4,20 @@ import com.gcigb.dbchain.bean.*
 import com.gcigb.dbchain.util.coding.base64Encode
 import com.google.gson.Gson
 
+fun createApplicationMessage(
+    // 库名称
+    name: String,
+    // 库描述
+    description: String,
+    // 权限
+    permission_required: Boolean,
+    // 创建者地址
+    owner: String
+): Message {
+    val messageValue = CreateApplicationMessageValue(name, base64Encode(description.toByteArray()), permission_required, owner)
+    return Message(type = "dbchain/CreateApplication", value = messageValue)
+}
+
 fun createInsertMessage(tableName: String, fields: Map<String, String>): Message {
     val json = Gson().toJson(fields)
     val base64Encode = base64Encode(json.toByteArray())

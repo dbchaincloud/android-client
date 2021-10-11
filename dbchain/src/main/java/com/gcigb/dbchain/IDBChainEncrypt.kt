@@ -3,6 +3,9 @@ package com.gcigb.dbchain
 import org.bitcoinj.crypto.DeterministicKey
 
 interface IDBChainEncrypt {
+
+    val pubKeyType: String
+
     /**
      * Ç©Ãû
      * @param privateByteArray ByteArray Ë½Ô¿
