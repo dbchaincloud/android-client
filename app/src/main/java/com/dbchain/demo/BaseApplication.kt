@@ -24,6 +24,9 @@ class BaseApplication : Application() {
             chainId = chainId,
             isDebug = debug,
             dbChainEncrypt = object : IDBChainEncrypt{
+                override val pubKeyType: String
+                    get() = ""
+
                 override fun sign(privateByteArray: ByteArray, data: ByteArray): ByteArray {
                     return byteArrayOf()
                 }
